@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #00529c;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #e0f0ff;
+  --color-on-primary-container: #001e3d;
+  --color-secondary: #f37021;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ffebd6;
+  --color-on-secondary-container: #4a1c00;
+  --color-tertiary: #371f00;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #ffddb9;
+  --color-on-tertiary-container: #cc9a5f;
+  --color-background: #f8fafd;
+  --color-on-background: #1a1c1e;
+  --color-surface: #ffffff;
+  --color-on-surface: #1a1c1e;
+  --color-surface-variant: #e2e8f0;
+  --color-on-surface-variant: #475569;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f8fafd;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-high: #e2e8f0;
+  --color-surface-container-highest: #cbd5e1;
+  --color-outline: #64748b;
+  --color-outline-variant: #cbd5e1;
+  --color-error: #dc2626;
+  --color-on-error: #ffffff;
+  --color-error-container: #fee2e2;
+  --color-on-error-container: #7f1d1d;
+  --color-success-dim: rgba(34, 197, 94, 0.15);
+  --color-success-text: #166534;
+  --color-danger-dim: rgba(239, 68, 68, 0.15);
+  --color-danger-text: #991b1b;
+}
+
+.dark {
+  --color-primary: #66aaff;
+  --color-on-primary: #002a54;
+  --color-primary-container: #003b73;
+  --color-on-primary-container: #cce0ff;
+  --color-secondary: #ff9a55;
+  --color-on-secondary: #4a1c00;
+  --color-secondary-container: #7a2e00;
+  --color-on-secondary-container: #ffd1b3;
+  --color-tertiary: #371f00;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #ffddb9;
+  --color-on-tertiary-container: #cc9a5f;
+  --color-background: #121212;
+  --color-on-background: #e2e8f0;
+  --color-surface: #18181b;
+  --color-on-surface: #e2e8f0;
+  --color-surface-variant: #27272a;
+  --color-on-surface-variant: #a1a1aa;
+  --color-surface-container-lowest: #09090b;
+  --color-surface-container-low: #18181b;
+  --color-surface-container: #27272a;
+  --color-surface-container-high: #3f3f46;
+  --color-surface-container-highest: #52525b;
+  --color-outline: #71717a;
+  --color-outline-variant: #3f3f46;
+  --color-error: #ef4444;
+  --color-on-error: #450a0a;
+  --color-error-container: #7f1d1d;
+  --color-on-error-container: #fca5a5;
+  --color-success-dim: rgba(74, 222, 128, 0.15);
+  --color-success-text: #4ade80;
+  --color-danger-dim: rgba(248, 113, 113, 0.15);
+  --color-danger-text: #f87171;
+}
+
+@layer base {
+    body { 
+        background-color: theme('colors.background'); 
+        color: theme('colors.on-background'); 
+        font-family: 'Inter', sans-serif; 
+    }
+}
+
+@layer components {
+    /* ── Tabular Numerals for Financial Data ── */
+    .tabular-nums { 
+        font-variant-numeric: tabular-nums; 
+    }
+
+    /* ── Ledger Strip for Important Summary Cards ── */
+    .ledger-strip { 
+        border-left: 3px solid #C8912E; 
+    }
+
+    /* ── Standard Card Border ── */
+    .custom-border, .card-border { 
+        border: 1px solid theme('colors.outline-variant'); 
+    }
+
+    /* ── Tables & Hover Rows ── */
+    .table-row-hover:hover { 
+        background-color: theme('colors.surface-container-high'); 
+    }
+    .zebra-row:nth-child(even) { 
+        background-color: theme('colors.surface-container'); 
+    }
+    .zebra-row:hover { 
+        background-color: theme('colors.surface-container-high'); 
+    }
+
+    /* ── Form Inputs ── */
+    .input-border { 
+        border: 1px solid theme('colors.outline-variant'); 
+    }
+    .input-focus:focus { 
+        border: 1px solid theme('colors.primary'); 
+        outline: none; 
+        box-shadow: none; 
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+        @apply px-4 py-2 bg-primary text-on-primary rounded font-body-semibold hover:opacity-90 transition-opacity;
+    }
+    .btn-secondary {
+        @apply px-4 py-2 border border-outline-variant rounded text-primary font-body-semibold hover:bg-surface-variant transition-colors;
+    }
+    .btn-danger {
+        @apply px-4 py-2 bg-error text-on-error rounded font-body-semibold hover:opacity-90 transition-opacity;
+    }
+}

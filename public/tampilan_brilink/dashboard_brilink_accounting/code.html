@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - BRILink Accounting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1e",
+                        "inverse-on-surface": "#f0f0f3",
+                        "inverse-primary": "#a2cbf0",
+                        "on-secondary-fixed": "#0e1d29",
+                        "on-primary-fixed-variant": "#1e4a6a",
+                        "primary-fixed-dim": "#a2cbf0",
+                        "surface-bright": "#f9f9fc",
+                        "surface": "#f9f9fc",
+                        "on-tertiary-fixed-variant": "#633f0b",
+                        "surface-container": "#eeedf0",
+                        "surface-dim": "#dadadd",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#42474d",
+                        "surface-tint": "#396283",
+                        "primary": "#00273e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1e",
+                        "background": "#f9f9fc",
+                        "secondary": "#51606e",
+                        "primary-container": "#0b3d5c",
+                        "inverse-surface": "#2f3033",
+                        "secondary-container": "#d2e1f2",
+                        "surface-container-high": "#e8e8eb",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d5e4f5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary-fixed-dim": "#b9c8d9",
+                        "tertiary-fixed-dim": "#f3bd7f",
+                        "tertiary-container": "#543200",
+                        "surface-variant": "#e2e2e5",
+                        "outline-variant": "#c2c7ce",
+                        "tertiary-fixed": "#ffddb9",
+                        "on-secondary-container": "#566472",
+                        "on-primary-container": "#7fa8cc",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#cce5ff",
+                        "on-secondary-fixed-variant": "#3a4856",
+                        "on-primary-fixed": "#001e31",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#371f00",
+                        "outline": "#72787e",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-container": "#cc9a5f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin_sm": "8px",
+                        "topbar_height": "56px",
+                        "container_max_width": "1440px",
+                        "margin_md": "16px",
+                        "sidebar_width": "240px",
+                        "margin_lg": "24px"
+                    },
+                    "fontFamily": {
+                        "hero-figure": ["Inter"],
+                        "body": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-semibold": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "subheading": ["Inter"]
+                    },
+                    "fontSize": {
+                        "hero-figure": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "subheading": ["16px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        .ledger-strip { border-left: 3px solid #C8912E; }
+        .custom-border { border-color: #DEDEDA; }
+        .zebra-row:nth-child(even) { background-color: #F7F7F5; }
+        .zebra-row:hover { background-color: #e8e8eb; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body text-body min-h-screen">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[240px] bg-surface border-r border-outline-variant flex flex-col py-margin_lg z-20">
+<div class="px-margin_lg mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">BRILink Agent</h1>
+<p class="font-label text-label text-on-surface-variant mt-1">Accounting System</p>
+</div>
+<div class="flex flex-col gap-2 px-margin_md">
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT bg-secondary-container/30 text-primary font-body-semibold border-r-2 border-primary" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Transaksi</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span>Laporan</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>Log Aktivitas</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Pengaturan</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 h-topbar_height w-[calc(100%-240px)] bg-surface border-b border-outline-variant flex justify-between items-center px-margin_lg z-10">
+<div class="font-subheading text-subheading text-primary font-bold">BRILink Accounting</div>
+<div class="flex items-center gap-4">
+<button aria-label="calendar_today" class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined">calendar_today</span>
+</button>
+<button aria-label="dark_mode" class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button aria-label="account_circle" class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[240px] mt-[56px] p-margin_lg max-w-[1440px]">
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-margin_lg">
+<div class="bg-surface-container-lowest border custom-border rounded-lg p-margin_md ledger-strip flex flex-col justify-between h-32">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Saldo Modal</h3>
+<div class="font-hero-figure text-hero-figure tabular-nums text-primary">Rp 45.200.000</div>
+</div>
+<div class="bg-surface-container-lowest border custom-border rounded-lg p-margin_md ledger-strip flex flex-col justify-between h-32">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Laba Hari Ini</h3>
+<div class="font-hero-figure text-hero-figure tabular-nums text-primary">Rp 125.500</div>
+</div>
+<div class="bg-surface-container-lowest border custom-border rounded-lg p-margin_md ledger-strip flex flex-col justify-between h-32">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Jumlah Transaksi</h3>
+<div class="font-hero-figure text-hero-figure tabular-nums text-primary">42</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Transaksi Terbaru Table -->
+<div class="lg:col-span-2 bg-surface-container-lowest border custom-border rounded-lg overflow-hidden flex flex-col">
+<div class="p-margin_md border-b custom-border bg-surface-container-low flex justify-between items-center">
+<h2 class="font-subheading text-subheading text-primary">Transaksi Terbaru</h2>
+<a class="text-primary hover:underline font-label text-label" href="#">Lihat Semua</a>
+</div>
+<div class="overflow-x-auto flex-grow">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b custom-border bg-surface font-label-caps text-label-caps text-on-surface-variant">
+<th class="py-3 px-4 font-normal">Waktu</th>
+<th class="py-3 px-4 font-normal">Jenis</th>
+<th class="py-3 px-4 font-normal">Keterangan</th>
+<th class="py-3 px-4 font-normal text-right">Nominal</th>
+<th class="py-3 px-4 font-normal text-right">Admin/Fee</th>
+</tr>
+</thead>
+<tbody class="font-body text-body text-on-surface">
+<tr class="zebra-row border-b custom-border transition-colors">
+<td class="py-3 px-4 tabular-nums">10:45</td>
+<td class="py-3 px-4">Tarik Tunai</td>
+<td class="py-3 px-4 text-on-surface-variant truncate max-w-[200px]">Bpk. Budi - BRI</td>
+<td class="py-3 px-4 text-right tabular-nums">Rp 500.000</td>
+<td class="py-3 px-4 text-right tabular-nums text-primary-container font-semibold">Rp 5.000</td>
+</tr>
+<tr class="zebra-row border-b custom-border transition-colors">
+<td class="py-3 px-4 tabular-nums">10:30</td>
+<td class="py-3 px-4">Transfer Sesama</td>
+<td class="py-3 px-4 text-on-surface-variant truncate max-w-[200px]">Ibu Siti - Pembayaran</td>
+<td class="py-3 px-4 text-right tabular-nums">Rp 1.200.000</td>
+<td class="py-3 px-4 text-right tabular-nums text-primary-container font-semibold">Rp 3.000</td>
+</tr>
+<tr class="zebra-row border-b custom-border transition-colors">
+<td class="py-3 px-4 tabular-nums">09:15</td>
+<td class="py-3 px-4">Setor Tunai</td>
+<td class="py-3 px-4 text-on-surface-variant truncate max-w-[200px]">Toko Makmur</td>
+<td class="py-3 px-4 text-right tabular-nums">Rp 2.500.000</td>
+<td class="py-3 px-4 text-right tabular-nums text-primary-container font-semibold">Rp 5.000</td>
+</tr>
+<tr class="zebra-row border-b custom-border transition-colors">
+<td class="py-3 px-4 tabular-nums">08:50</td>
+<td class="py-3 px-4">PLN Pascabayar</td>
+<td class="py-3 px-4 text-on-surface-variant truncate max-w-[200px]">No. 543210987654</td>
+<td class="py-3 px-4 text-right tabular-nums">Rp 350.000</td>
+<td class="py-3 px-4 text-right tabular-nums text-primary-container font-semibold">Rp 2.500</td>
+</tr>
+<tr class="zebra-row border-b custom-border transition-colors">
+<td class="py-3 px-4 tabular-nums">08:10</td>
+<td class="py-3 px-4">Topup Dana</td>
+<td class="py-3 px-4 text-on-surface-variant truncate max-w-[200px]">081234567890</td>
+<td class="py-3 px-4 text-right tabular-nums">Rp 100.000</td>
+<td class="py-3 px-4 text-right tabular-nums text-primary-container font-semibold">Rp 1.500</td>
+</tr>
+<tr class="zebra-row transition-colors">
+<td class="py-3 px-4 tabular-nums">07:45</td>
+<td class="py-3 px-4">Transfer Antar Bank</td>
+<td class="py-3 px-4 text-on-surface-variant truncate max-w-[200px]">Mandiri - Ani</td>
+<td class="py-3 px-4 text-right tabular-nums">Rp 750.000</td>
+<td class="py-3 px-4 text-right tabular-nums text-primary-container font-semibold">Rp 6.500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Weekly Profit Trend Chart (Simulated Flat Bar Chart) -->
+<div class="bg-surface-container-lowest border custom-border rounded-lg p-margin_md flex flex-col h-[400px]">
+<h2 class="font-subheading text-subheading text-primary mb-6">Tren Laba Mingguan</h2>
+<div class="flex-grow flex items-end justify-between gap-2 pt-4 relative">
+<!-- Y-Axis Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pb-8 z-0 pointer-events-none">
+<div class="border-t border-dashed border-outline-variant/30 w-full h-0"></div>
+<div class="border-t border-dashed border-outline-variant/30 w-full h-0"></div>
+<div class="border-t border-dashed border-outline-variant/30 w-full h-0"></div>
+<div class="border-t border-dashed border-outline-variant/30 w-full h-0"></div>
+<div class="border-t custom-border w-full h-0"></div>
+</div>
+<!-- Bars -->
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 45%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Sen</span>
+</div>
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 60%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Sel</span>
+</div>
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 55%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Rab</span>
+</div>
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 80%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Kam</span>
+</div>
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 70%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Jum</span>
+</div>
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 90%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Sab</span>
+</div>
+<div class="relative z-10 flex flex-col items-center w-full h-full justify-end group">
+<div class="bg-primary-container w-full max-w-[40px] rounded-t-sm hover:opacity-80 transition-opacity" style="height: 40%;"></div>
+<span class="font-label text-label text-on-surface-variant mt-2 h-6">Min</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

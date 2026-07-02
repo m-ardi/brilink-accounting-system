@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BRILink Accounting - Log Aktivitas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1e",
+                        "inverse-on-surface": "#f0f0f3",
+                        "inverse-primary": "#a2cbf0",
+                        "on-secondary-fixed": "#0e1d29",
+                        "on-primary-fixed-variant": "#1e4a6a",
+                        "primary-fixed-dim": "#a2cbf0",
+                        "surface-bright": "#f9f9fc",
+                        "surface": "#f9f9fc",
+                        "on-tertiary-fixed-variant": "#633f0b",
+                        "surface-container": "#eeedf0",
+                        "surface-dim": "#dadadd",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#42474d",
+                        "surface-tint": "#396283",
+                        "primary": "#00273e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1e",
+                        "background": "#f9f9fc",
+                        "secondary": "#51606e",
+                        "primary-container": "#0b3d5c",
+                        "inverse-surface": "#2f3033",
+                        "secondary-container": "#d2e1f2",
+                        "surface-container-high": "#e8e8eb",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d5e4f5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary-fixed-dim": "#b9c8d9",
+                        "tertiary-fixed-dim": "#f3bd7f",
+                        "tertiary-container": "#543200",
+                        "surface-variant": "#e2e2e5",
+                        "outline-variant": "#c2c7ce",
+                        "tertiary-fixed": "#ffddb9",
+                        "on-secondary-container": "#566472",
+                        "on-primary-container": "#7fa8cc",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#cce5ff",
+                        "on-secondary-fixed-variant": "#3a4856",
+                        "on-primary-fixed": "#001e31",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#371f00",
+                        "outline": "#72787e",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-container": "#cc9a5f",
+                        "brilink-danger": "#B3261E"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin_sm": "8px",
+                        "topbar_height": "56px",
+                        "container_max_width": "1440px",
+                        "margin_md": "16px",
+                        "sidebar_width": "240px",
+                        "margin_lg": "24px"
+                    },
+                    "fontFamily": {
+                        "hero-figure": ["Inter"],
+                        "body": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-semibold": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "subheading": ["Inter"]
+                    },
+                    "fontSize": {
+                        "hero-figure": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "subheading": ["16px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .timeline-line {
+            position: absolute;
+            left: 11px;
+            top: 24px;
+            bottom: -24px;
+            width: 1px;
+            background-color: #DEDEDA;
+        }
+        .timeline-item:last-child .timeline-line {
+            display: none;
+        }
+        .timeline-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #0B3d5C;
+            position: absolute;
+            left: 7px;
+            top: 6px;
+        }
+        .timeline-dot.danger {
+            background-color: #B3261E;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-surface border-r border-outline-variant fixed left-0 top-0 h-full w-[240px] flex flex-col py-margin_lg z-20">
+<div class="px-margin_lg mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+                BRILink Agent
+            </h1>
+<p class="font-label text-label text-on-surface-variant mt-1">Accounting System</p>
+</div>
+<ul class="flex flex-col flex-1">
+<li>
+<a class="flex items-center gap-3 px-margin_lg py-3 text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-margin_lg py-3 text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                    Transaksi
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-margin_lg py-3 text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+                    Laporan
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-margin_lg py-3 text-primary font-body-semibold border-r-2 border-primary bg-secondary-container/30" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                    Log Aktivitas
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-margin_lg py-3 text-on-surface-variant font-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Pengaturan
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="ml-[240px] flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 right-0 h-topbar_height w-[calc(100%-240px)] flex justify-between items-center px-margin_lg z-10">
+<h2 class="font-subheading text-subheading text-on-surface">Log Aktivitas</h2>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-primary transition-colors flex items-center justify-center w-8 h-8 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+</button>
+<button class="hover:text-primary transition-colors flex items-center justify-center w-8 h-8 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-[20px]" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="hover:text-primary transition-colors flex items-center justify-center w-8 h-8 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 mt-[56px] p-margin_lg max-w-[1440px] w-full mx-auto">
+<!-- Filters & Controls -->
+<div class="flex justify-between items-center mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="pl-9 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded focus:outline-none focus:border-primary-container font-body text-body w-64 placeholder:text-outline" placeholder="Cari aktivitas..." type="text"/>
+</div>
+<select class="px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded focus:outline-none focus:border-primary-container font-body text-body text-on-surface">
+<option>Semua Aktivitas</option>
+<option>Login/Logout</option>
+<option>Transaksi</option>
+<option>Perubahan Data</option>
+</select>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded text-on-surface font-body-semibold hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    Filter
+                </button>
+</div>
+<!-- Audit Trail Container -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-margin_lg">
+<h3 class="font-headline-md text-headline-md mb-6 border-b border-outline-variant pb-4">Audit Trail - 24 Okt 2023</h3>
+<div class="relative pl-6">
+<!-- Timeline Item 1 -->
+<div class="timeline-item relative pb-6">
+<div class="timeline-line"></div>
+<div class="timeline-dot"></div>
+<div class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 pl-4">
+<div class="w-32 flex-shrink-0 text-on-surface-variant font-label text-label">
+                                14:32:05 WIB
+                            </div>
+<div class="flex-1">
+<div class="font-body-semibold text-on-surface flex items-center gap-2">
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-xs">CREATE</span>
+                                    Transaksi Baru
+                                </div>
+<p class="font-body text-body text-on-surface-variant mt-1">Admin Budi memproses transfer dana Rp 5.000.000 ke Rekening 0987654321.</p>
+<div class="text-xs text-outline mt-1 font-mono">IP: 192.168.1.105 | ID Transaksi: TRX-88291</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 - Danger -->
+<div class="timeline-item relative pb-6">
+<div class="timeline-line"></div>
+<div class="timeline-dot danger"></div>
+<div class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 pl-4">
+<div class="w-32 flex-shrink-0 text-on-surface-variant font-label text-label">
+                                11:15:22 WIB
+                            </div>
+<div class="flex-1">
+<div class="font-body-semibold text-on-surface flex items-center gap-2">
+<span class="bg-error-container text-brilink-danger px-2 py-0.5 rounded text-xs border border-error-container">DELETE</span>
+<span class="text-brilink-danger">Penghapusan Jurnal</span>
+</div>
+<p class="font-body text-body text-on-surface-variant mt-1">Supervisor Siti menghapus entri jurnal koreksi JRN-0042.</p>
+<div class="text-xs text-outline mt-1 font-mono">IP: 192.168.1.55 | Memerlukan Otorisasi Ganda: VALID</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="timeline-item relative pb-6">
+<div class="timeline-line"></div>
+<div class="timeline-dot"></div>
+<div class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 pl-4">
+<div class="w-32 flex-shrink-0 text-on-surface-variant font-label text-label">
+                                09:45:10 WIB
+                            </div>
+<div class="flex-1">
+<div class="font-body-semibold text-on-surface flex items-center gap-2">
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-xs">UPDATE</span>
+                                    Pembaruan Data Nasabah
+                                </div>
+<p class="font-body text-body text-on-surface-variant mt-1">Admin Budi mengubah alamat untuk ID Nasabah NSB-1092.</p>
+<div class="text-xs text-outline mt-1 font-mono">IP: 192.168.1.105</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 4 -->
+<div class="timeline-item relative pb-6">
+<div class="timeline-line"></div>
+<div class="timeline-dot"></div>
+<div class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 pl-4">
+<div class="w-32 flex-shrink-0 text-on-surface-variant font-label text-label">
+                                08:02:30 WIB
+                            </div>
+<div class="flex-1">
+<div class="font-body-semibold text-on-surface flex items-center gap-2">
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-xs">LOGIN</span>
+                                    Sesi Dimulai
+                                </div>
+<p class="font-body text-body text-on-surface-variant mt-1">Admin Budi berhasil login ke sistem.</p>
+<div class="text-xs text-outline mt-1 font-mono">IP: 192.168.1.105 | Device: Chrome/Windows</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-center">
+<button class="px-4 py-2 border border-outline-variant rounded text-on-surface-variant font-body hover:bg-surface-container-high transition-colors">
+                        Muat Lebih Banyak
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

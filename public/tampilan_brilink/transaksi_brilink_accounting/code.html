@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transaksi - BRILink Accounting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1e",
+                        "inverse-on-surface": "#f0f0f3",
+                        "inverse-primary": "#a2cbf0",
+                        "on-secondary-fixed": "#0e1d29",
+                        "on-primary-fixed-variant": "#1e4a6a",
+                        "primary-fixed-dim": "#a2cbf0",
+                        "surface-bright": "#f9f9fc",
+                        "surface": "#f9f9fc",
+                        "on-tertiary-fixed-variant": "#633f0b",
+                        "surface-container": "#eeedf0",
+                        "surface-dim": "#dadadd",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#42474d",
+                        "surface-tint": "#396283",
+                        "primary": "#00273e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1e",
+                        "background": "#f9f9fc",
+                        "secondary": "#51606e",
+                        "primary-container": "#0b3d5c",
+                        "inverse-surface": "#2f3033",
+                        "secondary-container": "#d2e1f2",
+                        "surface-container-high": "#e8e8eb",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d5e4f5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary-fixed-dim": "#b9c8d9",
+                        "tertiary-fixed-dim": "#f3bd7f",
+                        "tertiary-container": "#543200",
+                        "surface-variant": "#e2e2e5",
+                        "outline-variant": "#c2c7ce",
+                        "tertiary-fixed": "#ffddb9",
+                        "on-secondary-container": "#566472",
+                        "on-primary-container": "#7fa8cc",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#cce5ff",
+                        "on-secondary-fixed-variant": "#3a4856",
+                        "on-primary-fixed": "#001e31",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#371f00",
+                        "outline": "#72787e",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-container": "#cc9a5f",
+                        
+                        "success-dim": "rgba(30, 123, 77, 0.1)",
+                        "success-text": "#1E7B4D",
+                        "danger-dim": "rgba(179, 38, 30, 0.1)",
+                        "danger-text": "#B3261E"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem",
+                        "badge": "4px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin_sm": "8px",
+                        "topbar_height": "56px",
+                        "container_max_width": "1440px",
+                        "margin_md": "16px",
+                        "sidebar_width": "240px",
+                        "margin_lg": "24px"
+                    },
+                    "fontFamily": {
+                        "hero-figure": ["Inter"],
+                        "body": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-semibold": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "subheading": ["Inter"]
+                    },
+                    "fontSize": {
+                        "hero-figure": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-semibold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "subheading": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); font-family: 'Inter', sans-serif; }
+        .table-row-hover:hover { background-color: #F7F7F5; }
+        .input-border { border: 1px solid #DEDEDA; }
+        .input-focus:focus { border: 1px solid #0B3D5C; outline: none; box-shadow: none; }
+        .card-border { border: 1px solid #DEDEDA; }
+    </style>
+</head>
+<body class="bg-background text-on-background flex min-h-screen">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[240px] bg-surface dark:bg-surface-container border-r border-outline-variant dark:border-outline flex flex-col py-margin_lg z-50">
+<div class="px-margin_lg mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">BRILink Agent</h1>
+<p class="font-label text-label text-on-surface-variant">Accounting System</p>
+</div>
+<ul class="flex-1 px-4 space-y-2">
+<!-- Dashboard (Inactive) -->
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-body hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<!-- Transaksi (Active) -->
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary dark:text-primary-fixed-dim font-body-semibold border-r-2 border-primary dark:border-primary-fixed-dim bg-secondary-container/30 opacity-80 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long" data-weight="fill" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span>Transaksi</span>
+</a>
+</li>
+<!-- Laporan (Inactive) -->
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-body hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Laporan</span>
+</a>
+</li>
+<!-- Log Aktivitas (Inactive) -->
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-body hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>Log Aktivitas</span>
+</a>
+</li>
+<!-- Pengaturan (Inactive) -->
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-body hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Pengaturan</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-[240px] flex flex-col min-h-screen relative max-w-container_max_width mx-auto w-full">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 h-topbar_height w-[calc(100%-240px)] bg-surface dark:bg-surface-container border-b border-outline-variant dark:border-outline z-40 flex justify-between items-center px-margin_lg">
+<h2 class="font-subheading text-subheading text-primary dark:text-primary-fixed-dim font-bold">BRILink Accounting</h2>
+<div class="flex items-center gap-4 text-on-surface-variant dark:text-on-surface-variant">
+<button class="hover:text-primary dark:hover:text-primary-fixed-dim transition-colors hover:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+<button class="hover:text-primary dark:hover:text-primary-fixed-dim transition-colors hover:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="hover:text-primary dark:hover:text-primary-fixed-dim transition-colors hover:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="mt-topbar_height p-margin_lg flex flex-col gap-8">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Transaksi Baru</h3>
+<!-- Bento Grid: Form & Preview -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-margin_lg">
+<!-- Left: Form Input -->
+<div class="bg-surface-container-lowest card-border rounded-lg p-margin_lg flex flex-col gap-6">
+<h4 class="font-subheading text-subheading text-on-surface border-b border-outline-variant pb-2">Detail Transaksi</h4>
+<form class="flex flex-col gap-4">
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface-variant">Kategori Transaksi</label>
+<select class="input-border input-focus rounded p-2 bg-surface font-body text-body text-on-surface h-10">
+<option>Tarik Tunai</option>
+<option>Setor Tunai</option>
+<option>Transfer Sesama BRI</option>
+<option>Transfer Antar Bank</option>
+<option>Pembayaran Tagihan</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface-variant">Nominal (Rp)</label>
+<input class="input-border input-focus rounded p-2 bg-surface font-body text-body text-on-surface h-10 tabular-nums" placeholder="0" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface-variant">Biaya Admin (Rp)</label>
+<input class="input-border input-focus rounded p-2 bg-surface font-body text-body text-on-surface h-10 tabular-nums" placeholder="3000" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface-variant">Keterangan (Opsional)</label>
+<textarea class="input-border input-focus rounded p-2 bg-surface font-body text-body text-on-surface" rows="2"></textarea>
+</div>
+<div class="pt-4 flex justify-end gap-4 border-t border-outline-variant mt-2">
+<button class="px-4 py-2 border border-[#DEDEDA] rounded text-primary font-body-semibold hover:bg-surface-variant transition-colors" type="button">Batal</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary rounded font-body-semibold hover:opacity-90 transition-opacity" type="button">Simpan Transaksi</button>
+</div>
+</form>
+</div>
+<!-- Right: Preview / Summary -->
+<div class="bg-surface-container-lowest card-border rounded-lg p-margin_lg flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full w-1 bg-primary-container"></div>
+<h4 class="font-subheading text-subheading text-on-surface border-b border-outline-variant pb-2 pl-4">Pratinjau Kalkulasi</h4>
+<div class="flex-1 flex flex-col justify-center items-center gap-6 p-6 bg-surface rounded card-border">
+<span class="material-symbols-outlined text-outline text-4xl" data-icon="calculate">calculate</span>
+<div class="text-center">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-2">TOTAL TRANSAKSI</p>
+<p class="font-hero-figure text-hero-figure text-primary tabular-nums">Rp 0</p>
+</div>
+<div class="w-full flex justify-between border-t border-outline-variant pt-4 mt-4 font-body text-body text-on-surface-variant tabular-nums">
+<span>Nominal Pokok: Rp 0</span>
+<span>Admin: Rp 0</span>
+</div>
+</div>
+</div>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mt-8 border-b border-outline-variant pb-2">Riwayat Transaksi</h3>
+<!-- Filter Bar -->
+<div class="flex flex-wrap items-center gap-4 bg-surface-container-lowest card-border rounded-lg p-3">
+<div class="relative flex-1 min-w-[200px]">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="w-full pl-9 pr-3 py-2 rounded input-border input-focus font-body text-body bg-surface" placeholder="Cari transaksi..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="filter_list">filter_list</span>
+<select class="input-border input-focus rounded px-3 py-2 bg-surface font-body text-body text-on-surface">
+<option>Semua Kategori</option>
+<option>Tarik Tunai</option>
+<option>Setor Tunai</option>
+</select>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="date_range">date_range</span>
+<select class="input-border input-focus rounded px-3 py-2 bg-surface font-body text-body text-on-surface">
+<option>Hari Ini</option>
+<option>7 Hari Terakhir</option>
+<option>Bulan Ini</option>
+</select>
+</div>
+</div>
+<!-- Table -->
+<div class="bg-surface-container-lowest card-border rounded-lg overflow-x-auto overflow-y-auto max-h-[500px]">
+<table class="w-full text-left font-body text-body text-on-surface border-collapse">
+<thead class="sticky top-0 bg-surface border-b border-outline-variant z-10">
+<tr>
+<th class="p-4 font-body-semibold text-on-surface-variant w-1/6">ID Transaksi</th>
+<th class="p-4 font-body-semibold text-on-surface-variant w-1/6">Waktu</th>
+<th class="p-4 font-body-semibold text-on-surface-variant w-1/4">Kategori</th>
+<th class="p-4 font-body-semibold text-on-surface-variant text-right w-1/6">Nominal (Rp)</th>
+<th class="p-4 font-body-semibold text-on-surface-variant w-1/6 text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="table-row-hover transition-colors">
+<td class="p-4 py-2 tabular-nums">TRX-0982</td>
+<td class="p-4 py-2 text-on-surface-variant tabular-nums">10:45 12/Oct</td>
+<td class="p-4 py-2">Tarik Tunai</td>
+<td class="p-4 py-2 text-right tabular-nums">500,000</td>
+<td class="p-4 py-2 text-center">
+<span class="inline-block px-2 py-1 rounded-badge text-xs font-semibold bg-success-dim text-success-text">Sukses</span>
+</td>
+</tr>
+<tr class="table-row-hover transition-colors">
+<td class="p-4 py-2 tabular-nums">TRX-0981</td>
+<td class="p-4 py-2 text-on-surface-variant tabular-nums">09:12 12/Oct</td>
+<td class="p-4 py-2">Transfer Sesama BRI</td>
+<td class="p-4 py-2 text-right tabular-nums">1,250,000</td>
+<td class="p-4 py-2 text-center">
+<span class="inline-block px-2 py-1 rounded-badge text-xs font-semibold bg-success-dim text-success-text">Sukses</span>
+</td>
+</tr>
+<tr class="table-row-hover transition-colors">
+<td class="p-4 py-2 tabular-nums">TRX-0980</td>
+<td class="p-4 py-2 text-on-surface-variant tabular-nums">08:30 12/Oct</td>
+<td class="p-4 py-2">Pembayaran Tagihan Listrik</td>
+<td class="p-4 py-2 text-right tabular-nums">150,000</td>
+<td class="p-4 py-2 text-center">
+<span class="inline-block px-2 py-1 rounded-badge text-xs font-semibold bg-danger-dim text-danger-text">Gagal</span>
+</td>
+</tr>
+<tr class="table-row-hover transition-colors">
+<td class="p-4 py-2 tabular-nums">TRX-0979</td>
+<td class="p-4 py-2 text-on-surface-variant tabular-nums">16:20 11/Oct</td>
+<td class="p-4 py-2">Setor Tunai</td>
+<td class="p-4 py-2 text-right tabular-nums">3,000,000</td>
+<td class="p-4 py-2 text-center">
+<span class="inline-block px-2 py-1 rounded-badge text-xs font-semibold bg-success-dim text-success-text">Sukses</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</div>
+</body></html>
