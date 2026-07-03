@@ -23,14 +23,13 @@ Dibangun dengan **Laravel 13**, **Tailwind CSS**, dan **Alpine.js**.
 
 Pastikan komputer Anda sudah memiliki:
 
-| Kebutuhan | Versi Minimum |
-|-----------|---------------|
-| PHP | 8.3+ |
-| Composer | 2.x |
-| Node.js | 18+ |
-| NPM | 9+ |
-| XAMPP| (sudah include di PHP) |
+| Kebutuhan | Versi | Link Download |
+|-----------|-------|---------------|
+| XAMPP | Terbaru | [apachefriends.org/download.html](https://www.apachefriends.org/download.html) |
+| Composer | 2.x | [getcomposer.org/download](https://getcomposer.org/download/) |
+| Node.js + NPM | 18+ | [nodejs.org/en/download](https://nodejs.org/en/download/) |
 
+> **Catatan:** PHP sudah otomatis terinstall bersama XAMPP — tidak perlu install PHP secara terpisah.
 
 ---
 
