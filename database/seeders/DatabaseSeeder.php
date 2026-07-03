@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\AgentSetting;
 use App\Models\Category;
 use App\Models\FeeRule;
+use App\Models\Modal;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,13 +18,14 @@ class DatabaseSeeder extends Seeder
      * Data yang di-seed:
      * 1. User owner (pemilik agen)
      * 2. 3 Kategori layanan: Transfer, Tarik Tunai, PPOB
-     * 3. Fee rules provisional per kategori (⚠️ PENDING VALIDATION)
-     * 4. Saldo modal awal dan konfigurasi agen
+     * 3. Fee rules per kategori (biaya_admin & setoran_bri)
+     * 4. Saldo modal awal di tabel modal (Rp 0 — diisi pemilik lewat Pengaturan)
+     * 5. Identitas agen di agent_settings
      */
     public function run(): void
     {
         // ─── 1. USER OWNER ────────────────────────────────────────────────
-        $owner = User::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'owner@brilink-rambo.id'],
             [
                 'name'     => 'Pemilik Agen BRILink Rambo',
@@ -33,7 +35,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // ─── 2. KATEGORI LAYANAN ──────────────────────────────────────────
-        $categories = [
+        $kategoris = [
             [
                 'name'        => 'Transfer',
                 'description' => 'Layanan transfer uang antar rekening via BRILink',
@@ -48,55 +50,73 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($categories as $cat) {
-            Category::firstOrCreate(['name' => $cat['name']], $cat);
+        foreach ($kategoris as $kat) {
+            Category::firstOrCreate(['name' => $kat['name']], $kat);
         }
 
-        // ─── 3. FEE RULES BERTINGKAT (TIERED) ────────────────────────────
-        // Formula: Laba Bersih = fee_value - biaya_operasional
+        // ─── 3. FEE RULES BERTINGKAT ─────────────────────────────────────
+        // biaya_admin = fee yang dibebankan agen kepada nasabah (pendapatan agen)
+        // setoran_bri = bagian yang menjadi hak bank BRI (biaya agen)
+        // laba_bersih = biaya_admin - setoran_bri  (dihitung di TransactionService)
+        //
+        // Referensi riset lapangan (BRILink Sulawesi Selatan/Palopo, 2024):
+        //   Transfer:    nasabah biasanya dikenakan Rp 3.000 – Rp 15.000
+        //   Tarik Tunai: fee sedikit lebih tinggi (agen keluarkan uang fisik)
+        //   PPOB:        fee flat Rp 2.000 – Rp 3.000 per tagihan
+        //   setoran_bri: estimasi ~10% dari biaya_admin (sharing fee BRI)
 
         $feeRulesData = [
             'Transfer' => [
-                ['min' => 1, 'max' => 1000000, 'fee' => 5000, 'ops' => 500],
-                ['min' => 1000001, 'max' => 5000000, 'fee' => 10000, 'ops' => 500],
-                ['min' => 5000001, 'max' => 10000000, 'fee' => 15000, 'ops' => 500],
-                ['min' => 10000001, 'max' => null, 'fee' => 20000, 'ops' => 500],
+                // Nominal ≤ 500 ribu: transaksi kecil, fee minimal
+                ['min' => 1,        'max' => 500000,   'admin' => 3000,  'bri' => 300],
+                // 500 ribu – 1 juta
+                ['min' => 500001,   'max' => 1000000,  'admin' => 5000,  'bri' => 500],
+                // 1 juta – 5 juta
+                ['min' => 1000001,  'max' => 5000000,  'admin' => 7000,  'bri' => 700],
+                // 5 juta – 10 juta
+                ['min' => 5000001,  'max' => 10000000, 'admin' => 10000, 'bri' => 1000],
+                // > 10 juta
+                ['min' => 10000001, 'max' => null,     'admin' => 15000, 'bri' => 1500],
             ],
             'Tarik Tunai' => [
-                ['min' => 1, 'max' => 1000000, 'fee' => 5000, 'ops' => 500],
-                ['min' => 1000001, 'max' => 5000000, 'fee' => 10000, 'ops' => 500],
-                ['min' => 5000001, 'max' => 10000000, 'fee' => 15000, 'ops' => 500],
-                ['min' => 10000001, 'max' => null, 'fee' => 20000, 'ops' => 500],
+                // Agen keluar uang fisik → risiko lebih tinggi → fee lebih besar
+                ['min' => 1,        'max' => 500000,   'admin' => 5000,  'bri' => 500],
+                ['min' => 500001,   'max' => 1000000,  'admin' => 7000,  'bri' => 700],
+                ['min' => 1000001,  'max' => 5000000,  'admin' => 10000, 'bri' => 1000],
+                ['min' => 5000001,  'max' => 10000000, 'admin' => 12000, 'bri' => 1200],
+                ['min' => 10000001, 'max' => null,     'admin' => 15000, 'bri' => 1500],
             ],
             'PPOB' => [
-                ['min' => 1, 'max' => null, 'fee' => 3000, 'ops' => 500], // Flat
+                // Flat untuk semua nominal tagihan (PLN, air, internet, dll.)
+                ['min' => 1, 'max' => null, 'admin' => 2500, 'bri' => 250],
             ],
         ];
 
         foreach ($feeRulesData as $categoryName => $tiers) {
             $category = Category::where('name', $categoryName)->first();
-            if ($category) {
-                foreach ($tiers as $tier) {
-                    FeeRule::create([
-                        'category_id'       => $category->id,
-                        'min_nominal'       => $tier['min'],
-                        'max_nominal'       => $tier['max'],
-                        'fee_type'          => 'nominal',
-                        'fee_value'         => $tier['fee'],
-                        'biaya_operasional' => $tier['ops'],
-                        'is_active'         => true,
-                    ]);
-                }
+            if (! $category) {
+                continue;
+            }
+
+            foreach ($tiers as $tier) {
+                FeeRule::create([
+                    'category_id'  => $category->id,
+                    'min_nominal'  => $tier['min'],
+                    'max_nominal'  => $tier['max'],
+                    'fee_type'     => 'nominal',
+                    'biaya_admin'  => $tier['admin'],   // fee ke nasabah
+                    'setoran_bri'  => $tier['bri'],     // hak bank
+                    'is_active'    => true,
+                ]);
             }
         }
 
-        // ─── 4. KONFIGURASI AGEN ─────────────────────────────────────────
-        $settings = [
-            [
-                'key'         => 'saldo_modal',
-                'value'       => '5000000', // Saldo modal awal: Rp 5.000.000 (sesuaikan)
-                'description' => 'Saldo modal agen saat ini — diupdate otomatis setiap transaksi',
-            ],
+        // ─── 4. SALDO MODAL AWAL (tabel modal) ───────────────────────────
+        // Dimulai dari Rp 0 — pemilik agen mengisi sendiri lewat halaman Pengaturan
+        Modal::updateOrCreate([], ['saldo_saat_ini' => 0]);
+
+        // ─── 5. IDENTITAS AGEN (agent_settings) ──────────────────────────
+        $identitas = [
             [
                 'key'         => 'nama_agen',
                 'value'       => 'Agen BRILink Rambo',
@@ -104,7 +124,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'key'         => 'alamat_agen',
-                'value'       => 'Dr. Ratulangi Kilometer 5',
+                'value'       => 'Jl. Dr. Ratulangi Kilometer 5, Palopo',
                 'description' => 'Alamat agen untuk header laporan',
             ],
             [
@@ -114,14 +134,14 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($settings as $setting) {
+        foreach ($identitas as $item) {
             AgentSetting::updateOrCreate(
-                ['key' => $setting['key']],
-                ['value' => $setting['value'], 'description' => $setting['description']]
+                ['key' => $item['key']],
+                ['value' => $item['value'], 'description' => $item['description']]
             );
         }
 
-        $this->command->info('✅ Seeder selesai: 1 user owner, 3 kategori, fee rules provisional, konfigurasi agen');
-        $this->command->warn('⚠️  Fee rules masih PROVISIONAL — verifikasi ke pemilik agen sebelum go-live!');
+        $this->command->info('✅ Seeder selesai: 1 user owner, 3 kategori, fee rules final, saldo modal Rp 0');
+        $this->command->line('   ℹ️  Isi saldo modal awal via halaman Pengaturan Agen sebelum mulai input transaksi.');
     }
 }

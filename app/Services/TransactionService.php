@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\ActivityLog;
-use App\Models\AgentSetting;
 use App\Models\Category;
+use App\Models\Modal;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -12,35 +12,39 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * TransactionService — Inti logika bisnis kalkulasi transaksi BRILink.
+ * TransactionService — Inti logika bisnis transaksi BRILink.
  *
- * Semua kalkulasi fee, laba, dan perubahan saldo modal ditangani di sini,
- * BUKAN di Controller, sesuai prinsip Single Responsibility.
+ * Formula kalkulasi yang berlaku (dikonfirmasi pemilik agen):
  *
- * ⚠️ PENDING VALIDATION — Formula laba bersih di sini masih provisional
- * dan belum diverifikasi ke pemilik Agen BRILink Rambo (BAB III skripsi).
+ *   biaya_admin   = fee yang dibebankan agen kepada nasabah (dari fee_rules)
+ *   setoran_bri   = bagian yang menjadi hak bank BRI (dari fee_rules)
+ *   laba_bersih   = biaya_admin - setoran_bri
  *
- * Formula provisional saat ini:
- *   Laba Bersih = fee_bank - biaya_operasional
- *   Saldo Modal Baru = Saldo Lama - nominal (untuk Transfer/Tarik Tunai)
- *                                 (untuk PPOB: saldo tidak berkurang karena
- *                                  pembayaran langsung dari nasabah)
+ *   saldo_sesudah = saldo_sebelum - nominal_transaksi + laba_bersih
+ *
+ * Alasan rumus saldo:
+ *   Agen mengeluarkan uang sejumlah nominal untuk melayani nasabah (saldo berkurang),
+ *   lalu menerima kembali fee/laba dari transaksi tersebut (saldo bertambah).
+ *   Rumus ini berlaku sama untuk semua kategori: Transfer, Tarik Tunai, dan PPOB.
+ *
+ * Sumber saldo: tabel `modal` (bukan agent_settings).
+ * Logika fee   : tabel `fee_rules` (tidak hardcoded di kode).
+ * Lokasi logika: Service class ini, bukan Controller.
  */
 class TransactionService
 {
     /**
      * Simpan transaksi baru dan perbarui saldo modal agen.
      *
-     * @param  array $data  Data dari StoreTransactionRequest
-     * @return Transaction  Transaksi yang baru disimpan
-     * @throws RuntimeException Jika kategori tidak memiliki fee rule aktif
+     * @param  array 
+     * @return Transaction  
+     * @throws RuntimeException 
      */
     public function store(array $data): Transaction
     {
         return DB::transaction(function () use ($data) {
             /** @var User $user */
-            $user = Auth::user();
-
+            $user    = Auth::user();
             $nominal = (float) $data['nominal'];
 
             // 1. Ambil kategori dan fee rule aktif berdasarkan nominal
@@ -54,37 +58,37 @@ class TransactionService
                 );
             }
 
-            // Nominal sudah di-parsing di atas            // 2. Hitung fee bank dari nominal (⚠️ PROVISIONAL)
-            $feeBank           = $feeRule->hitungFeeBank($nominal);
-            $biayaOperasional  = (float) $feeRule->biaya_operasional;
+            // 2. Kalkulasi finansial dari fee_rules
+            $biayaAdmin  = $feeRule->getBiayaAdmin($nominal); // fee ke nasabah
+            $setoranBri  = (float) $feeRule->setoran_bri;      // hak bank
+            $labaBersih  = $biayaAdmin - $setoranBri;
 
-            // 3. Hitung laba bersih (⚠️ PROVISIONAL — formula pending validasi lapangan)
-            $labaBersih = $feeBank - $biayaOperasional;
+            // 3. Hitung perubahan saldo modal
+            $saldoSebelum = Modal::getSaldo();
+            $saldoSesudah = $saldoSebelum - $nominal + $labaBersih;
 
-            // 4. Hitung perubahan saldo modal
-            $saldoSebelum = AgentSetting::getSaldoModal();
-            $saldoSesudah = $this->hitungSaldoSesudah($saldoSebelum, $nominal, $category->name);
-
-            // 5. Simpan transaksi (snapshot semua nilai saat ini)
+            // 4. Simpan transaksi (snapshot semua nilai finansial saat ini)
             $transaction = Transaction::create([
                 'user_id'             => $user->id,
                 'category_id'         => $category->id,
                 'nominal'             => $nominal,
-                'fee_bank'            => $feeBank,
-                'biaya_operasional'   => $biayaOperasional,
+                'biaya_admin'         => $biayaAdmin,
+                'setoran_bri'         => $setoranBri,
                 'laba_bersih'         => $labaBersih,
                 'saldo_modal_sebelum' => $saldoSebelum,
                 'saldo_modal_sesudah' => $saldoSesudah,
                 'keterangan'          => $data['keterangan'] ?? null,
             ]);
 
-            // 6. Update saldo modal agen di agent_settings
-            AgentSetting::setSaldoModal($saldoSesudah);
+            // 5. Update saldo modal di tabel modal
+            Modal::setSaldo($saldoSesudah);
 
-            // 7. Catat ke audit trail
-            $this->log($user, 'created', $transaction,
-                "Transaksi {$category->name} sebesar Rp " . number_format($nominal, 0, ',', '.') .
-                " ditambahkan. Laba: Rp " . number_format($labaBersih, 0, ',', '.')
+            // 6. Catat ke audit trail
+            $this->log(
+                $user, 'created', $transaction,
+                "Transaksi {$category->name} Rp " . number_format($nominal, 0, ',', '.') .
+                " — Laba: Rp " . number_format($labaBersih, 0, ',', '.') .
+                " — Saldo: Rp " . number_format($saldoSesudah, 0, ',', '.')
             );
 
             return $transaction;
@@ -92,20 +96,19 @@ class TransactionService
     }
 
     /**
-     * Update transaksi yang sudah ada.
-     * Saldo modal di-recalculate dari nol berdasarkan semua transaksi aktif.
+     * Update transaksi yang sudah ada dan recalculate saldo modal.
      *
-     * @param  Transaction $transaction  Transaksi yang akan diupdate
-     * @param  array       $data         Data baru
-     * @return Transaction               Transaksi setelah update
+     * @param  Transaction $
+     * @param  array     
+     * @return Transaction               
      */
     public function update(Transaction $transaction, array $data): Transaction
     {
         return DB::transaction(function () use ($transaction, $data) {
             /** @var User $user */
-            $user = Auth::user();
-
+            $user    = Auth::user();
             $nominal = (float) $data['nominal'];
+
             $category = Category::findOrFail($data['category_id']);
             $feeRule  = $category->activeFeeRuleFor($nominal);
 
@@ -115,35 +118,33 @@ class TransactionService
                 );
             }
 
-            // Nominal sudah di-parsing di atas
-            $feeBank          = $feeRule->hitungFeeBank($nominal);
-            $biayaOperasional = (float) $feeRule->biaya_operasional;
-            $labaBersih       = $feeBank - $biayaOperasional; // ⚠️ PROVISIONAL
+            $biayaAdmin = $feeRule->getBiayaAdmin($nominal);
+            $setoranBri = (float) $feeRule->setoran_bri;
+            $labaBersih = $biayaAdmin - $setoranBri;
 
-            // Simpan nilai lama untuk log
-            $nominalLama = $transaction->nominal;
-
-            // Gunakan saldo sebelum transaksi ini sebagai basis
+            // Gunakan saldo sebelum transaksi ini sebagai titik awal recalculation
             $saldoSebelum = (float) $transaction->saldo_modal_sebelum;
-            $saldoSesudah = $this->hitungSaldoSesudah($saldoSebelum, $nominal, $category->name);
+            $saldoSesudah = $saldoSebelum - $nominal + $labaBersih;
+
+            $nominalLama = $transaction->nominal;
 
             $transaction->update([
                 'category_id'         => $category->id,
                 'nominal'             => $nominal,
-                'fee_bank'            => $feeBank,
-                'biaya_operasional'   => $biayaOperasional,
+                'biaya_admin'         => $biayaAdmin,
+                'setoran_bri'         => $setoranBri,
                 'laba_bersih'         => $labaBersih,
                 'saldo_modal_sesudah' => $saldoSesudah,
                 'keterangan'          => $data['keterangan'] ?? $transaction->keterangan,
             ]);
 
-            // Recalculate saldo modal dari transaksi terakhir
-            $saldoTerkini = (float) Transaction::latest()->first()?->saldo_modal_sesudah
-                            ?? AgentSetting::getSaldoModal();
-            AgentSetting::setSaldoModal($saldoTerkini);
+            // Sync saldo modal ke nilai akhir dari transaksi terbaru
+            $saldoTerkini = (float) (Transaction::latest()->first()?->saldo_modal_sesudah
+                            ?? Modal::getSaldo());
+            Modal::setSaldo($saldoTerkini);
 
-            // Audit trail
-            $this->log($user, 'updated', $transaction,
+            $this->log(
+                $user, 'updated', $transaction,
                 "Transaksi #{$transaction->id} diubah. " .
                 "Nominal: Rp " . number_format($nominalLama, 0, ',', '.') .
                 " → Rp " . number_format($nominal, 0, ',', '.')
@@ -154,7 +155,7 @@ class TransactionService
     }
 
     /**
-     * Hapus transaksi dan recalculate saldo modal.
+     * Hapus transaksi dan recalculate saldo modal ke transaksi terakhir yang tersisa.
      *
      * @param  Transaction $transaction  Transaksi yang akan dihapus
      */
@@ -162,55 +163,29 @@ class TransactionService
     {
         DB::transaction(function () use ($transaction) {
             /** @var User $user */
-            $user = Auth::user();
-
+            $user          = Auth::user();
             $transactionId = $transaction->id;
             $nominal       = $transaction->nominal;
             $categoryName  = $transaction->category->name ?? 'Unknown';
 
-            // Catat audit SEBELUM dihapus
-            $this->log($user, 'deleted', $transaction,
+            // Catat audit SEBELUM dihapus agar ID masih valid
+            $this->log(
+                $user, 'deleted', $transaction,
                 "Transaksi #{$transactionId} ({$categoryName}) " .
                 "Rp " . number_format($nominal, 0, ',', '.') . " dihapus."
             );
 
             $transaction->delete();
 
-            // Recalculate saldo modal dari transaksi terakhir yang tersisa
+            // Kembalikan saldo ke transaksi terakhir yang tersisa,
+            // atau ke saldo sebelum transaksi yang dihapus jika sudah tidak ada transaksi
             $transaksiTerakhir = Transaction::latest()->first();
             $saldoBaru = $transaksiTerakhir
                 ? (float) $transaksiTerakhir->saldo_modal_sesudah
-                : (float) $transaction->saldo_modal_sebelum; // Kembalikan ke saldo sebelum transaksi ini
+                : (float) $transaction->saldo_modal_sebelum;
 
-            AgentSetting::setSaldoModal($saldoBaru);
+            Modal::setSaldo($saldoBaru);
         });
-    }
-
-    /**
-     * Hitung saldo modal baru setelah transaksi.
-     *
-     * ⚠️ PENDING VALIDATION — Logika arah saldo (±nominal) di bawah ini
-     * masih provisional. Perlu validasi ke pemilik agen:
-     * - Apakah Transfer selalu mengurangi saldo modal?
-     * - Bagaimana perlakuan PPOB terhadap saldo modal?
-     *
-     * Asumsi provisional:
-     * - Transfer    : saldo berkurang sebesar nominal (kas keluar)
-     * - Tarik Tunai : saldo berkurang sebesar nominal (kas keluar)
-     * - PPOB        : saldo tidak berubah (pembayaran langsung dari nasabah ke loket)
-     *
-     * @param  float  $saldoSebelum  Saldo modal sebelum transaksi
-     * @param  float  $nominal       Nominal transaksi
-     * @param  string $categoryName  Nama kategori ('Transfer'|'Tarik Tunai'|'PPOB')
-     * @return float                 Saldo modal sesudah transaksi
-     */
-    private function hitungSaldoSesudah(float $saldoSebelum, float $nominal, string $categoryName): float
-    {
-        // ⚠️ PROVISIONAL — pending validasi lapangan (BAB III)
-        return match ($categoryName) {
-            'PPOB'  => $saldoSebelum,                // PPOB: saldo tidak berubah
-            default => $saldoSebelum - $nominal,     // Transfer & Tarik Tunai: kas keluar
-        };
     }
 
     /**

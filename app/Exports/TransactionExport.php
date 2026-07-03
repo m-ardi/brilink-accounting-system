@@ -35,9 +35,9 @@ class TransactionExport implements FromCollection, WithHeadings, WithMapping, Wi
             'Tanggal & Waktu',
             'Kategori',
             'Nominal (Rp)',
-            'Fee Bank (Rp)',      // ⚠️ PROVISIONAL
-            'Biaya Operasional (Rp)', // ⚠️ PROVISIONAL
-            'Laba Bersih (Rp)',   // ⚠️ PROVISIONAL
+            'Biaya Admin (Rp)',
+            'Setoran BRI (Rp)',
+            'Laba Bersih (Rp)',
             'Saldo Sebelum (Rp)',
             'Saldo Sesudah (Rp)',
             'Keterangan',
@@ -55,8 +55,8 @@ class TransactionExport implements FromCollection, WithHeadings, WithMapping, Wi
             $transaction->created_at->format('d/m/Y H:i'),
             $transaction->category->name ?? '-',
             (float) $transaction->nominal,
-            (float) $transaction->fee_bank,
-            (float) $transaction->biaya_operasional,
+            (float) $transaction->biaya_admin,
+            (float) $transaction->setoran_bri,
             (float) $transaction->laba_bersih,
             (float) $transaction->saldo_modal_sebelum,
             (float) $transaction->saldo_modal_sesudah,
@@ -70,7 +70,7 @@ class TransactionExport implements FromCollection, WithHeadings, WithMapping, Wi
         return [
             1 => [ // Baris header
                 'font'      => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
-                'fill'      => ['fillType' => 'solid', 'color' => ['argb' => 'FF1D4ED8']],
+                'fill'      => ['fillType' => 'solid', 'color' => ['argb' => 'FF00273E']],
                 'alignment' => ['horizontal' => 'center'],
             ],
         ];

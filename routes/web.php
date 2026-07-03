@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AgentSettingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
@@ -34,6 +35,10 @@ Route::middleware(['auth', 'verified', 'owner'])->group(function () {
 
     // Kelola User
     Route::resource('users', \App\Http\Controllers\UserController::class);
+
+    // Pengaturan Agen & Saldo Modal
+    Route::get('/settings', [AgentSettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [AgentSettingController::class, 'update'])->name('settings.update');
 
     // Audit Trail
     Route::get('/audit-log', [ActivityLogController::class, 'index'])->name('audit-log.index');

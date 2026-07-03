@@ -6,10 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Model aturan fee per kategori transaksi.
- *
- * ⚠️ PENDING VALIDATION — Nilai fee_value dan biaya_operasional di sini
- * masih provisional dan belum diverifikasi ke pemilik Agen BRILink Rambo.
+ * Model aturan fee per kategori transaksi BRILink.
+ * Formula laba: laba_bersih = biaya_admin - setoran_bri
  */
 class FeeRule extends Model
 {
@@ -18,17 +16,17 @@ class FeeRule extends Model
         'min_nominal',
         'max_nominal',
         'fee_type',
-        'fee_value',
-        'biaya_operasional',
+        'biaya_admin',
+        'setoran_bri',
         'is_active',
     ];
 
     protected $casts = [
-        'min_nominal'       => 'decimal:2',
-        'max_nominal'       => 'decimal:2',
-        'fee_value'         => 'decimal:2',
-        'biaya_operasional' => 'decimal:2',
-        'is_active'         => 'boolean',
+        'min_nominal'  => 'decimal:2',
+        'max_nominal'  => 'decimal:2',
+        'biaya_admin'  => 'decimal:2',
+        'setoran_bri'  => 'decimal:2',
+        'is_active'    => 'boolean',
     ];
 
     public function category(): BelongsTo
@@ -37,19 +35,16 @@ class FeeRule extends Model
     }
 
     /**
-     * Hitung fee bank dari nominal transaksi.
-     * ⚠️ PENDING VALIDATION — Formula provisional.
-     *
-     * @param  float $nominal Nominal transaksi nasabah
-     * @return float Fee bank yang diperoleh agen
+     * @param  float 
+     * @return float           
      */
-    public function hitungFeeBank(float $nominal): float
+    public function getBiayaAdmin(float $nominal): float
     {
         if ($this->fee_type === 'persentase') {
-            return round($nominal * ($this->fee_value / 100), 2);
+            return round($nominal * ((float) $this->biaya_admin / 100), 2);
         }
 
-        // Default: nominal flat
-        return (float) $this->fee_value;
+        // Default: flat nominal
+        return (float) $this->biaya_admin;
     }
 }

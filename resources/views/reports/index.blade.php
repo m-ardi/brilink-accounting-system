@@ -60,15 +60,15 @@
                 <p class="font-body-semibold text-body-semibold tabular-nums text-on-surface">Rp {{ number_format($summary['total_nominal'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 border-r custom-border border-b md:border-b-0">
-                <p class="font-label text-label text-on-surface-variant mb-1">Total Fee Bank <span class="text-[10px]">⚠️</span></p>
+                <p class="font-label text-label text-on-surface-variant mb-1">Total Biaya Admin</p>
                 <p class="font-body-semibold text-body-semibold tabular-nums text-on-surface">Rp {{ number_format($summary['total_fee_bank'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 border-r custom-border">
-                <p class="font-label text-label text-on-surface-variant mb-1">Total Biaya Op <span class="text-[10px]">⚠️</span></p>
+                <p class="font-label text-label text-on-surface-variant mb-1">Total Setoran BRI</p>
                 <p class="font-body-semibold text-body-semibold tabular-nums text-on-surface">Rp {{ number_format($summary['total_biaya_op'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-primary-container/10">
-                <p class="font-label text-label text-on-surface-variant mb-1">Total Laba <span class="text-[10px]">⚠️</span></p>
+                <p class="font-label text-label text-on-surface-variant mb-1">Total Laba</p>
                 <p class="font-headline-md text-headline-md tabular-nums text-primary-container">Rp {{ number_format($summary['total_laba'], 0, ',', '.') }}</p>
             </div>
         </div>
@@ -82,8 +82,8 @@
                         <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant">Waktu</th>
                         <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant">Kategori</th>
                         <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant text-right">Nominal</th>
-                        <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant text-right">Fee Bank</th>
-                        <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant text-right">Biaya Op</th>
+                        <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant text-right">Biaya Admin</th>
+                        <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant text-right">Setoran BRI</th>
                         <th class="py-2 px-margin_md font-label-caps text-label-caps text-on-surface-variant text-right">Laba</th>
                     </tr>
                 </thead>
@@ -94,8 +94,8 @@
                         <td class="py-2 px-margin_md">{{ $tx->created_at->format('d/m/Y H:i') }}</td>
                         <td class="py-2 px-margin_md">{{ $tx->category->name }}</td>
                         <td class="py-2 px-margin_md text-right">Rp {{ number_format($tx->nominal, 0, ',', '.') }}</td>
-                        <td class="py-2 px-margin_md text-right text-on-surface-variant">Rp {{ number_format($tx->fee_bank, 0, ',', '.') }}</td>
-                        <td class="py-2 px-margin_md text-right text-on-surface-variant">Rp {{ number_format($tx->biaya_operasional, 0, ',', '.') }}</td>
+                        <td class="py-2 px-margin_md text-right text-on-surface-variant">Rp {{ number_format($tx->biaya_admin, 0, ',', '.') }}</td>
+                        <td class="py-2 px-margin_md text-right text-on-surface-variant">Rp {{ number_format($tx->setoran_bri, 0, ',', '.') }}</td>
                         <td class="py-2 px-margin_md text-right font-body-semibold text-primary">Rp {{ number_format($tx->laba_bersih, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach

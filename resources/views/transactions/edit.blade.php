@@ -83,11 +83,11 @@
             
             <div class="w-full mt-4 flex flex-col gap-2">
                 <div class="flex justify-between items-center px-4 py-2 bg-surface rounded">
-                    <span class="font-body text-sm text-on-surface-variant">Fee Bank</span>
+                    <span class="font-body text-sm text-on-surface-variant">Biaya Admin</span>
                     <span class="font-body-semibold text-sm text-on-surface tabular-nums" id="preview-fee">Rp 0</span>
                 </div>
                 <div class="flex justify-between items-center px-4 py-2 bg-surface rounded">
-                    <span class="font-body text-sm text-on-surface-variant">Ops (Agen)</span>
+                    <span class="font-body text-sm text-on-surface-variant">Setoran BRI</span>
                     <span class="font-body-semibold text-sm text-error tabular-nums" id="preview-ops">-Rp 0</span>
                 </div>
                 <div class="flex justify-between items-center px-4 py-2 bg-primary-container/10 border border-primary/20 rounded">
@@ -132,11 +132,11 @@ function updatePreview() {
             if (rule) {
                 let fee = 0;
                 if (rule.fee_type === 'persentase') {
-                    fee = val * (parseFloat(rule.fee_value) / 100);
+                    fee = val * (parseFloat(rule.biaya_admin) / 100);
                 } else {
-                    fee = parseFloat(rule.fee_value);
+                    fee = parseFloat(rule.biaya_admin);
                 }
-                const ops = parseFloat(rule.biaya_operasional);
+                const ops = parseFloat(rule.setoran_bri);
                 const laba = fee - ops;
 
                 previewFee.textContent = 'Rp ' + fee.toLocaleString('id-ID');

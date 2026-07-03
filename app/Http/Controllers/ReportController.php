@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AgentSetting;
 use App\Models\Category;
+use App\Models\Modal;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -32,11 +33,11 @@ class ReportController extends Controller
         $transactions = $query->get();
 
         $summary = [
-            'total_transaksi'      => $transactions->count(),
-            'total_nominal'        => $transactions->sum('nominal'),
-            'total_fee_bank'       => $transactions->sum('fee_bank'),
-            'total_biaya_op'       => $transactions->sum('biaya_operasional'),
-            'total_laba'           => $transactions->sum('laba_bersih'),
+            'total_transaksi' => $transactions->count(),
+            'total_nominal'   => $transactions->sum('nominal'),
+            'total_fee_bank'  => $transactions->sum('biaya_admin'),
+            'total_biaya_op'  => $transactions->sum('setoran_bri'),
+            'total_laba'      => $transactions->sum('laba_bersih'),
         ];
 
         return view('reports.index', compact('categories', 'transactions', 'summary'));
@@ -62,9 +63,10 @@ class ReportController extends Controller
         $summary = [
             'total_transaksi' => $transactions->count(),
             'total_nominal'   => $transactions->sum('nominal'),
-            'total_fee_bank'  => $transactions->sum('fee_bank'),
-            'total_biaya_op'  => $transactions->sum('biaya_operasional'),
+            'total_fee_bank'  => $transactions->sum('biaya_admin'),
+            'total_biaya_op'  => $transactions->sum('setoran_bri'),
             'total_laba'      => $transactions->sum('laba_bersih'),
+            'saldo_modal'     => Modal::getSaldo(),
         ];
 
         $agentInfo = [

@@ -88,6 +88,12 @@
                         Kelola User
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('settings.index') }}" class="flex items-center px-margin_lg py-2.5 font-body text-sm transition-colors rounded-lg mx-2 {{ request()->routeIs('settings.*') ? 'text-primary bg-primary/10 font-semibold' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface' }}">
+                        <span class="material-symbols-outlined mr-3 text-[20px] {{ request()->routeIs('settings.*') ? 'fill' : '' }}">settings</span>
+                        Pengaturan Agen
+                    </a>
+                </li>
                 @endif
             </ul>
 

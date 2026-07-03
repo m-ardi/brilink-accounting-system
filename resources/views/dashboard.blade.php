@@ -25,9 +25,14 @@
             <div class="font-hero-figure text-hero-figure tabular-nums text-on-surface" id="stat-saldo">Rp
                 {{ number_format($saldoModal, 0, ',', '.') }}</div>
             <div class="h-px bg-primary/10 group-hover:bg-primary/20 transition-colors"></div>
-            <div class="flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[14px] text-on-surface-variant">calendar_today</span>
-                <span class="text-[11px] text-on-surface-variant">Diperbarui: {{ now()->format('d M Y') }}</span>
+            <div class="flex justify-between items-center text-[11px] text-on-surface-variant font-body">
+                <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                    <span>Diperbarui: {{ now()->format('d M Y') }}</span>
+                </div>
+                @if(auth()->user()->role === 'owner')
+                <a href="{{ route('settings.index') }}" class="hover:text-primary transition-colors font-body-semibold">Kelola Modal →</a>
+                @endif
             </div>
         </div>
 

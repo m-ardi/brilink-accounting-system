@@ -34,19 +34,4 @@ class AgentSetting extends Model
         );
     }
 
-    /**
-     * Ambil saldo modal saat ini (helper shortcut).
-     */
-    public static function getSaldoModal(): float
-    {
-        return (float) static::get('saldo_modal', 0);
-    }
-
-    /**
-     * Update saldo modal (dipanggil setiap kali ada transaksi baru).
-     */
-    public static function setSaldoModal(float $saldo): void
-    {
-        static::set('saldo_modal', $saldo);
-    }
 }

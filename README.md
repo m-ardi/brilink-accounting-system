@@ -1,58 +1,244 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏦 Sistem Informasi Akuntansi Agen BRILink
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web untuk mencatat dan memantau transaksi harian Agen BRILink secara akurat — mencakup Transfer, Tarik Tunai, dan PPOB — lengkap dengan kalkulasi laba bersih otomatis, laporan keuangan, dan ekspor PDF/Excel.
 
-## About Laravel
+Dibangun dengan **Laravel 13**, **Tailwind CSS**, dan **Alpine.js**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- 📝 **Input Transaksi** — Catat Transfer, Tarik Tunai, dan PPOB dengan fee otomatis berdasarkan nominal
+- 💰 **Kalkulasi Laba Otomatis** — `laba_bersih = biaya_admin - setoran_bri`
+- 📊 **Saldo Modal Real-time** — `saldo_sesudah = saldo_sebelum - nominal + laba_bersih`
+- 📈 **Dashboard** — Ringkasan harian + grafik transaksi 7 hari terakhir
+- 📄 **Laporan PDF & Excel** — Ekspor laporan per periode dengan filter
+- 🔧 **Pengaturan Agen** — Isi identitas agen dan saldo modal awal
+- 🔒 **Autentikasi** — Login aman berbasis role (owner)
+- 📋 **Log Aktivitas** — Rekam jejak semua aksi pengguna
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ⚙️ Persyaratan Sistem
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Pastikan komputer Anda sudah memiliki:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| Kebutuhan | Versi Minimum |
+|-----------|---------------|
+| PHP | 8.3+ |
+| Composer | 2.x |
+| Node.js | 18+ |
+| NPM | 9+ |
+| XAMPP| (sudah include di PHP) |
 
-## Agentic Development
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## 🚀 Instalasi
+
+### Cara 1 — Clone via Git
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone repositori
+git clone https://github.com/mvelyn-pi/brilink-accounting-system.git
 
-php artisan boost:install
+# 2. Masuk ke folder proyek
+cd brilink-accounting-system
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Cara 2 — Download ZIP
 
-## Contributing
+1. Klik tombol **Code → Download ZIP** di halaman GitHub
+2. Ekstrak file ZIP ke folder yang Anda inginkan
+3. Buka terminal/command prompt, lalu masuk ke folder hasil ekstrak:
+   ```bash
+   cd path/ke/folder/hasil-ekstrak
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### Langkah Instalasi (Sama untuk Kedua Cara)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 1. Install dependensi PHP
 
-## Security Vulnerabilities
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### 2. Buat file konfigurasi `.env`
 
-## License
+```bash
+cp .env.example .env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### 3. Generate application key
+
+```bash
+php artisan key:generate
+```
+
+#### 4. Buat database MySQL di phpMyAdmin
+
+1. Pastikan XAMPP sudah berjalan (Apache + MySQL **Start**)
+2. Buka browser → **http://localhost/phpmyadmin**
+3. Klik **New** di panel kiri
+4. Isi nama database: `brilink_rambo` → klik **Create**
+
+#### 5. Sesuaikan konfigurasi `.env`
+
+Buka file `.env`, pastikan bagian database seperti ini:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=brilink_rambo
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+> Jika MySQL Anda memakai password, isi `DB_PASSWORD` sesuai password tersebut.
+
+#### 6. Jalankan migrasi & seeder
+
+```bash
+php artisan migrate --seed
+```
+
+Perintah ini akan membuat semua tabel dan mengisi data awal:
+- 1 akun owner default
+- 3 kategori layanan (Transfer, Tarik Tunai, PPOB)
+- Fee rules bertingkat per kategori
+- Saldo modal awal Rp 0
+
+#### 7. Compile aset CSS & JavaScript (sekali saja)
+
+```bash
+npm install
+```
+
+#### 8. Build aset frontend
+
+```bash
+npm run build
+```
+
+#### 9. Jalankan server lokal
+
+```bash
+php artisan serve
+```
+
+Buka browser dan akses: **http://127.0.0.1:8000**
+
+---
+
+## 🔑 Akun Login Default
+
+Setelah seeder berjalan, gunakan akun berikut untuk login pertama kali:
+
+| Field | Nilai |
+|-------|-------|
+| **Email** | `owner@brilink-rambo.id` |
+| **Password** | `password123` |
+
+> **Penting:** Ganti password segera setelah login pertama melalui halaman Profil.
+
+---
+
+## 🏁 Konfigurasi Awal Setelah Login
+
+Lakukan langkah-langkah ini setelah berhasil masuk:
+
+1. **Isi Identitas Agen** — Buka menu **Pengaturan**, ubah nama agen, alamat, dan kode agen sesuai data asli.
+2. **Isi Saldo Modal Awal** — Masih di halaman **Pengaturan**, masukkan jumlah uang modal yang ada di laci/brankas agen saat ini. Ini adalah titik awal perhitungan saldo.
+3. **Mulai Input Transaksi** — Buka menu **Transaksi → Tambah Transaksi**.
+
+---
+
+## 💻 Mode Development (Untuk Developer)
+
+Jika ingin menjalankan mode development dengan hot-reload:
+
+```bash
+# Terminal 1 — Laravel backend
+php artisan serve
+
+# Terminal 2 — Vite frontend (hot reload)
+npm run dev
+```
+
+Atau gunakan satu perintah (memerlukan `concurrently`):
+
+```bash
+composer run dev
+```
+
+---
+
+## 🧪 Menjalankan Test
+
+```bash
+php artisan test
+```
+
+Atau dengan output lebih detail:
+
+```bash
+./vendor/bin/phpunit --testdox
+```
+
+---
+
+## 📁 Struktur Tabel Database
+
+| Tabel | Keterangan |
+|-------|-----------|
+| `users` | Akun pengguna (role: owner) |
+| `categories` | Jenis layanan: Transfer, Tarik Tunai, PPOB |
+| `fee_rules` | Aturan fee bertingkat per kategori |
+| `modal` | Saldo modal agen (singleton) |
+| `transactions` | Rekap setiap transaksi + snapshot saldo |
+| `agent_settings` | Identitas agen (nama, alamat, kode) |
+| `activity_logs` | Log aktivitas sistem |
+
+---
+
+## 🔄 Reset & Seed Ulang Database
+
+Jika ingin mengulang dari awal (semua data terhapus):
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+---
+
+## 📦 Dependensi Utama
+
+| Package | Kegunaan |
+|---------|---------|
+| `laravel/framework ^13` | Framework utama |
+| `laravel/breeze` | Autentikasi |
+| `barryvdh/laravel-dompdf` | Ekspor laporan PDF |
+| `maatwebsite/excel` | Ekspor laporan Excel |
+| `tailwindcss` | Styling CSS |
+| `alpinejs` | Interaktivitas frontend |
+
+---
+
+## ❓ Troubleshooting
+
+**Q: Muncul error `SQLSTATE[HY000]: unable to open database file`**
+> Pastikan file `database/database.sqlite` sudah dibuat. Jalankan `touch database/database.sqlite`.
+
+**Q: Halaman muncul tapi CSS/JS tidak termuat**
+> Jalankan `npm run build` terlebih dahulu agar aset frontend ter-compile.
+
+**Q: Setelah clone ZIP, muncul error `key not set`**
+> Pastikan sudah menjalankan `php artisan key:generate` setelah membuat file `.env`.
+
+**Q: Login gagal meski pakai akun default**
+> Pastikan seeder sudah berjalan: `php artisan migrate --seed`. Jika sudah ada tabel sebelumnya, gunakan `php artisan migrate:fresh --seed`.
+
+---

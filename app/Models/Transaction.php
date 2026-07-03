@@ -7,14 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Model transaksi BRILink.
- *
- * Catatan arsitektur:
- * - Nilai fee_bank, biaya_operasional, laba_bersih, saldo_modal_sebelum,
- *   dan saldo_modal_sesudah adalah SNAPSHOT saat transaksi terjadi.
- *   Tidak menggunakan FK ke fee_rules agar laporan historis tidak berubah
- *   jika aturan fee diperbarui di kemudian hari.
- *
- * ⚠️ PENDING VALIDATION — Formula laba bersih provisional.
+ * Formula yang berlaku:
+ *   laba_bersih    = biaya_admin - setoran_bri
+ *   saldo_sesudah  = saldo_sebelum - nominal + laba_bersih
  */
 class Transaction extends Model
 {
@@ -22,8 +17,8 @@ class Transaction extends Model
         'user_id',
         'category_id',
         'nominal',
-        'fee_bank',
-        'biaya_operasional',
+        'biaya_admin',
+        'setoran_bri',
         'laba_bersih',
         'saldo_modal_sebelum',
         'saldo_modal_sesudah',
@@ -32,8 +27,8 @@ class Transaction extends Model
 
     protected $casts = [
         'nominal'             => 'decimal:2',
-        'fee_bank'            => 'decimal:2',
-        'biaya_operasional'   => 'decimal:2',
+        'biaya_admin'         => 'decimal:2',
+        'setoran_bri'         => 'decimal:2',
         'laba_bersih'         => 'decimal:2',
         'saldo_modal_sebelum' => 'decimal:2',
         'saldo_modal_sesudah' => 'decimal:2',

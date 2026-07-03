@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AgentSetting;
 use App\Models\Category;
+use App\Models\Modal;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        $saldoModal     = AgentSetting::getSaldoModal();
+        $saldoModal     = Modal::getSaldo();
         $namaAgen       = AgentSetting::get('nama_agen', 'Agen BRILink');
         $labaHariIni    = $this->hitungLabaHariIni();
         $totalTxHariIni = Transaction::whereDate('created_at', today())->count();
@@ -53,8 +54,8 @@ class DashboardController extends Controller
     public function stats(): JsonResponse
     {
         return response()->json([
-            'saldo_modal'          => AgentSetting::getSaldoModal(),
-            'saldo_modal_formatted' => 'Rp ' . number_format(AgentSetting::getSaldoModal(), 0, ',', '.'),
+            'saldo_modal'          => Modal::getSaldo(),
+            'saldo_modal_formatted' => 'Rp ' . number_format(Modal::getSaldo(), 0, ',', '.'),
             'laba_hari_ini'        => $this->hitungLabaHariIni(),
             'laba_hari_ini_formatted' => 'Rp ' . number_format($this->hitungLabaHariIni(), 0, ',', '.'),
             'total_tx_hari_ini'    => Transaction::whereDate('created_at', today())->count(),

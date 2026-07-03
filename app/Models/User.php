@@ -9,10 +9,6 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * Model user aplikasi BRILink.
- *
- * Role saat ini: hanya 'owner' (pemilik agen).
- * Kolom `role` disiapkan untuk scale-up ke multi-user (owner + staff)
- * tanpa perlu mengubah struktur database.
  */
 class User extends Authenticatable
 {
@@ -22,7 +18,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // 'owner' | 'staff' — default 'owner' via database
+        'role', 
     ];
 
     protected $hidden = [
