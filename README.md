@@ -26,6 +26,7 @@ Pastikan komputer Anda sudah memiliki:
 | Kebutuhan | Versi | Link Download |
 |-----------|-------|---------------|
 | XAMPP | Terbaru | [apachefriends.org/download.html](https://www.apachefriends.org/download.html) |
+| Git & Git Bash | Terbaru | [git-scm.com/downloads](https://git-scm.com/downloads) |
 | Composer | 2.x | [getcomposer.org/download](https://getcomposer.org/download/) |
 | Node.js + NPM | 18+ | [nodejs.org/en/download](https://nodejs.org/en/download/) |
 
